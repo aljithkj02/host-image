@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const connectDB = require('./config/db');
+const userRouter = require('./routes/user');
+const galleryRouter = require('./routes/gallery');
 
 const app = express();
 app.use(cors());
@@ -12,6 +14,9 @@ app.use(express.json())
 app.get('/', (req, res) => {
     res.send({ message: 'Welcome to my server!' });
 })
+
+app.use('/api/user', userRouter);
+app.use('/api/gallery', galleryRouter);
 
 
 const serverStart = () => {
