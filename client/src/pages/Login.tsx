@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 const Login = () => { 
   return (
     <Box display="flex" justifyContent="center" alignItems="center" h="80vh">
-      <Box w={["95%", "90%", "70%", "50%"]} boxShadow="rgba(0, 0, 0, 0.35) 0px 5px 15px" p="70px 50px" borderRadius="lg"
-        display="flex" flexDir="column" gap="20px"
+      <Box w={["95%", "90%", "70%", "50%"]} boxShadow="rgba(0, 0, 0, 0.35) 0px 5px 15px" p="70px 50px" 
+        borderRadius="lg" display="flex" flexDir="column" gap="20px"
       >
         <Text fontSize="3xl" textAlign="center">Login</Text>
         <form style={{ display: 'flex', flexDirection: 'column', gap: '20px'}}>
