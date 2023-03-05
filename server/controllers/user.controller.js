@@ -27,13 +27,13 @@ const signupHandler = async (req, res) => {
         }
 
         const hashedPassword = bcrypt.hashSync(password, 10);
-        const newUser = new User({
+        const newUser = {
             name,
             email,
             password: hashedPassword
-        });
+        };
 
-        const savedUser = await User.create({ newUser });
+        const savedUser = await User.create( newUser );
         const tokenObj = {
             _id: savedUser._id,
             email: savedUser.email
