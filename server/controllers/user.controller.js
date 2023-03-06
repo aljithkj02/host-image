@@ -42,8 +42,9 @@ const signupHandler = async (req, res) => {
         const token = generateToken(tokenObj);
         res.status(201).json({
             status: true,
-            message: "User created successfully",
-            token
+            message: "User signedup successfully",
+            token,
+            name
         })
 
     } catch (err) {
@@ -57,7 +58,39 @@ const signupHandler = async (req, res) => {
 
 const loginHandler = async (req, res) => {
     try {
-        
+        const { email, password } = req.body;
+        if (!email ||!password) {
+            return res.status(400).json({
+                status: false,
+                message: "Please enter all fields!"
+            })
+        }
+        const user = await User.findOne({ email });
+        if(!user){
+            return res.status(400).json({
+                status: false,
+                message: "User does not exist!"
+            })
+        }
+        const isMatch = bcrypt.compareSync(password, user.password);
+        if(!isMatch){
+            return res.status(400).json({
+                status: false,
+                message: "Incorrect password!"
+            })
+        }
+        const tokenObj = {
+            _id: user._id,
+            email: user.email
+        }
+        const token = generateToken(tokenObj);
+        res.status(200).json({
+            status: true,
+            message: "User logged in successfully",
+            token,
+            name: user.name
+        })
+
     } catch (err) {
         console.log(err.message);
         res.status(500).json({
