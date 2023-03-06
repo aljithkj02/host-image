@@ -9,11 +9,13 @@ const Upload = () => {
   const { loadingOn, loadingOff, dispatch } = useAction();
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
+    console.log(image)
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      dispatch(loadingOn());
       const formData = new FormData();
       formData.append('image', image);
       const token = localStorage.getItem('token') || 'token';
@@ -23,8 +25,11 @@ const Upload = () => {
           'authorization': `Bearer ${token}`
         }
       });
+      setImage(null);
       console.log(res);
+      dispatch(loadingOff());
     } catch (err) {
+      dispatch(loadingOff());
       console.log(err?.response.data.message);
     }
   }
@@ -38,7 +43,7 @@ const Upload = () => {
             <Box display={"flex"} gap={5} flexDir={["column", "column", "row"]} 
               alignItems={["none", "none", "center"]} justifyContent="space-between"
             >
-                <input type="file" name="image" onChange={ handleImageChange }/>
+                <input type="file" name="image" onChange={ handleImageChange } required={true} />
                 <Button type='submit' colorScheme='teal' variant='solid' px="20px">Upload</Button>
             </Box>
           </form>

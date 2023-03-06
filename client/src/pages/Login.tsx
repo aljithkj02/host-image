@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Text, Input, Button } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import config from '../config';
 import { useAction } from '../hooks';
@@ -11,13 +11,13 @@ const Login = () => {
       password: ''
   }) 
   const { login, dispatch, loadingOn, loadingOff } = useAction();
-
+  const navigate = useNavigate();
   const handleChange = (e) => {
       setDetails({
         ...details,
         [e.target.name]: e.target.value
       })
-  }
+  } 
 
   const loginUser = async (e) => {
       e.preventDefault()
@@ -29,6 +29,7 @@ const Login = () => {
             const token = res?.data?.token;
             const name = res?.data?.name;
             dispatch(login(token, name));
+            navigate('/');
         }
       } catch (err) {  
           dispatch(loadingOff());
