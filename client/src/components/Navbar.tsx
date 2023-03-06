@@ -1,11 +1,12 @@
 import React from 'react'
 import { Box, Text, Button } from '@chakra-ui/react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { useData, useAction } from '../hooks';
 
 const Navbar = () => {
   const { isAuth, name } = useData();
   const { logout, dispatch } = useAction();
+  const navigate = useNavigate();
   const logoutUser = () => {
     dispatch(logout());
   }
@@ -17,7 +18,9 @@ const Navbar = () => {
         py={4} px={10} bgColor="#ECF2FF" 
       >
         <Box>
-            <Text>{ name || 'User'}</Text>
+            <Text fontSize="xl" fontWeight="500" cursor="pointer"
+              onClick={ () => navigate('/') }
+            >{ name || 'User'}</Text>
         </Box>
 
         <Box display="flex" gap={8}>
