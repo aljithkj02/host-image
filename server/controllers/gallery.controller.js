@@ -1,5 +1,7 @@
 const cloudinary = require('cloudinary').v2;
+const fs  = require('fs');
 const Gallery = require('../models/gallery.model');
+
 
 const uploadImage = async (req, res) => {
     try {
@@ -30,6 +32,11 @@ const uploadImage = async (req, res) => {
                 message : 'No file was uploaded.' 
             });
         }
+
+        // Deleting image from upload folder
+        fs.unlink(image, (err) => {
+            if(err) console.log(err);
+        })
 
         const gallery = await Gallery.create({
             img: imageUrl,
@@ -71,7 +78,26 @@ const getAllImages = async (req, res) => {
     }
 }
 
+const getThumbnails = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const images = await Gallery.find({ _id : id });
+        return res.status(200).json({ 
+            status: true,
+            message : 'Images fetched successfully.',
+            data: images
+        });
+    } catch (err) {
+        console.error(err.message);
+        return res.status(500).send({
+            status: false,
+            message: 'Server error'
+        }); 
+    }
+}
+
 module.exports = {
     uploadImage,
-    getAllImages
+    getAllImages,
+    getThumbnails
 }
