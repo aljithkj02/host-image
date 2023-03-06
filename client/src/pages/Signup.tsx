@@ -3,6 +3,7 @@ import { Box, Text, Input, Button } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import config from '../config';
+import { useAction } from '../hooks';
 
 const Signup = () => {
   const [details, setDetails] = useState({
@@ -10,6 +11,8 @@ const Signup = () => {
       email: '',
       password: ''
   }) 
+  const { login, dispatch, loadingOn, loadingOff } = useAction();
+
   const handleChange = (e) => {
       setDetails({
         ...details,
@@ -20,12 +23,15 @@ const Signup = () => {
   const signupUser = async (e) => {
     e.preventDefault();
     try {
+      dispatch(loadingOn());
       let res = await axios.post(`${config.API_URL}/api/user/signup`, { ...details });
       console.log(res?.data?.message);
       if(res?.data?.status){
           const token = res?.data?.token;
+          dispatch(login(token));
       }
     } catch (err) {
+      dispatch(loadingOff());
       console.log(err?.response?.data?.message);
     }
   }

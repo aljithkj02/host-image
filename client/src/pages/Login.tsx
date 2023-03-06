@@ -3,7 +3,7 @@ import { Box, Text, Input, Button } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import config from '../config';
-import { useAction } from '../hooks/useAction';
+import { useAction } from '../hooks';
 
 const Login = () => { 
   const [details, setDetails] = useState({
