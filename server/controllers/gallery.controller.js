@@ -36,7 +36,7 @@ const uploadImage = async (req, res) => {
             thumbnail_1: thumbnail1Url,
             thumbnail_2: thumbnail2Url,
             thumbnail_3: thumbnail3Url,
-            author_id: '6404c30beee2d73c2d2df192'
+            author_id: req.user._id
         })
 
         return res.status(200).json({ 
