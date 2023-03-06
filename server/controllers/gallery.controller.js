@@ -96,8 +96,27 @@ const getThumbnails = async (req, res) => {
     }
 }
 
+const deleteImage = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        await Gallery.findByIdAndDelete({ _id : id });
+        return res.status(200).json({ 
+            status: true,
+            message : 'Image deleted successfully.'
+        });
+    } catch (err) {
+        console.error(err.message);
+        return res.status(500).send({
+            status: false,
+            message: 'Server error'
+        }); 
+    }
+}
+
 module.exports = {
     uploadImage,
     getAllImages,
-    getThumbnails
+    getThumbnails,
+    deleteImage
 }
