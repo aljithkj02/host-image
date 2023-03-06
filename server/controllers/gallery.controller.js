@@ -13,9 +13,9 @@ const uploadImage = async (req, res) => {
         const result = await cloudinary.uploader.upload(image, {
             folder: 'uploads',
             transformation: [
-                { width: 500, height: 500, crop: 'limit' },
-                { width: 250, height: 250, crop: 'limit' },
-                { width: 100, height: 100, crop: 'limit' }
+                { width: 200, height: 200, crop: 'fill', gravity: 'face' },
+                { width: 400, height: 400, crop: 'fill', gravity: 'face' },
+                { width: 600, height: 600, crop: 'fill', gravity: 'face' }
             ]
         });
 
@@ -47,10 +47,31 @@ const uploadImage = async (req, res) => {
 
     } catch (err) {
         console.error(err.message);
-        return res.status(500).send('Server Error');  
+        return res.status(500).send({
+            status: false,
+            message: 'Server error'
+        });  
     }
 }   
 
+const getAllImages = async (req, res) => {
+    try {
+        const images = await Gallery.find({ author_id: req.user._id });
+        return res.status(200).json({ 
+            status: true,
+            message : 'Images fetched successfully.',
+            data: images
+        });
+    } catch (err) {
+        console.error(err.message);
+        return res.status(500).send({
+            status: false,
+            message: 'Server error'
+        }); 
+    }
+}
+
 module.exports = {
-    uploadImage
+    uploadImage,
+    getAllImages
 }
