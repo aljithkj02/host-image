@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Text, Input, Button } from '@chakra-ui/react';
+import { Box, Text, Input, Button, useToast } from '@chakra-ui/react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import config from '../config';
@@ -12,6 +12,8 @@ const Login = () => {
   }) 
   const { login, dispatch, loadingOn, loadingOff } = useAction();
   const navigate = useNavigate();
+  const toast = useToast()
+
   const handleChange = (e) => {
       setDetails({
         ...details,
@@ -24,15 +26,26 @@ const Login = () => {
       try {
         dispatch(loadingOn());
         let res = await axios.post(`${config.API_URL}/api/user/login`, { ...details });
-        console.log(res?.data?.message);
         if(res?.data?.status){
             const token = res?.data?.token;
             const name = res?.data?.name;
             dispatch(login(token, name));
+            toast({
+                title: res?.data?.message,
+                status: 'success',
+                position: 'top',
+                isClosable: true,
+            })
             navigate('/');
         }
       } catch (err) {  
           dispatch(loadingOff());
+          toast({
+              title: err?.response?.data?.message,
+              status: 'error',
+              position: 'top',
+              isClosable: true,
+          })
           console.log(err?.response?.data?.message);
       }
   }
