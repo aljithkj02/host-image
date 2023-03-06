@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Text, Input, Button } from '@chakra-ui/react';
+import { Box, Text, Input, Button, useToast } from '@chakra-ui/react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import config from '../config';
@@ -11,6 +11,7 @@ const Signup = () => {
       email: '',
       password: ''
   }) 
+  const toast = useToast()
   const { login, dispatch, loadingOn, loadingOff } = useAction();
   const navigate = useNavigate();
 
@@ -23,6 +24,33 @@ const Signup = () => {
 
   const signupUser = async (e) => {
     e.preventDefault();
+    if(!details.email.includes('.com') || !details.email.includes('@')){
+        toast({
+          title: 'Please enter a valid email address',
+          status: 'warning',
+          position: 'top',
+          isClosable: true,
+        })
+        return;
+    }
+    if(details.password.includes(' ')){
+        toast({
+          title: 'Password cannot contain spaces',
+          status: 'warning',
+          position: 'top',
+          isClosable: true,
+        })
+        return;
+    }
+    if(details.password.length < 6){
+        toast({
+          title: 'Password must be at least 6 characters long',
+          status: 'warning',
+          position: 'top',
+          isClosable: true,
+        })
+        return;
+    }
     try {
       dispatch(loadingOn());
       let res = await axios.post(`${config.API_URL}/api/user/signup`, { ...details });
@@ -31,10 +59,22 @@ const Signup = () => {
           const token = res?.data?.token;
           const name = res?.data?.name;
           dispatch(login(token, name));
+          toast({
+              title: res.data.message,
+              status: 'success',
+              position: 'top',
+              isClosable: true,
+          })
           navigate('/');
       }
     } catch (err) {
       dispatch(loadingOff());
+      toast({
+          title: err?.response?.data?.message,
+          status: 'error',
+          position: 'top',
+          isClosable: true,
+      })
       console.log(err?.response?.data?.message);
     }
   }
