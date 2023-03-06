@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Box, Text, Input, Button } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import config from '../config';
 
 const Login = () => { 
   const [details, setDetails] = useState({
       email: '',
       password: ''
-  })
+  }) 
   const handleChange = (e) => {
       setDetails({
         ...details,
@@ -14,9 +16,17 @@ const Login = () => {
       })
   }
 
-  const loginUser = (e) => {
-    e.preventDefault()
-    console.log(details)
+  const loginUser = async (e) => {
+      e.preventDefault()
+      try {
+        let res = await axios.post(`${config.API_URL}/api/user/login`, { ...details });
+        console.log(res?.data?.message);
+        if(res?.data?.status){
+            const token = res?.data?.token;
+        }
+      } catch (err) {  
+          console.log(err?.response?.data?.message);
+      }
   }
   
   return (

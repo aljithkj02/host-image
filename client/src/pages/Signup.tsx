@@ -9,7 +9,7 @@ const Signup = () => {
       name: '',
       email: '',
       password: ''
-  })
+  }) 
   const handleChange = (e) => {
       setDetails({
         ...details,
