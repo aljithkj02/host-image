@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Text, Input, Button } from '@chakra-ui/react';
+import { Box, Text, Input, Button, useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import config from '../config';
 import { useAction } from '../hooks';
@@ -7,9 +7,10 @@ import { useAction } from '../hooks';
 const Upload = () => {
   const [ image, setImage] = useState(null);
   const { loadingOn, loadingOff, dispatch } = useAction();
+  const toast = useToast();
+
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
-    console.log(image)
   }
 
   const handleSubmit = async (e) => {
@@ -25,10 +26,24 @@ const Upload = () => {
         }
       });
       setImage(null);
-      console.log(res);
+      if(res?.data?.status){
+          toast({
+              title: res?.data?.message,
+              status: 'success',
+              position: 'top',
+              isClosable: true,
+          })
+      }
       dispatch(loadingOff());
+      
     } catch (err) {
       dispatch(loadingOff());
+      toast({
+          title: err?.response.data.message,
+          status: 'error',
+          position: 'top',
+          isClosable: true,
+      })
       console.log(err?.response.data.message);
     }
   }
