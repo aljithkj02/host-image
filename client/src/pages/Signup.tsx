@@ -28,7 +28,8 @@ const Signup = () => {
       console.log(res?.data?.message);
       if(res?.data?.status){
           const token = res?.data?.token;
-          dispatch(login(token));
+          const name = res?.data?.name;
+          dispatch(login(token, name));
       }
     } catch (err) {
       dispatch(loadingOff());

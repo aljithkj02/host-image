@@ -1,16 +1,19 @@
 const token = localStorage.getItem('token') || '';
+const name = localStorage.getItem('name') || 'User';
 const isAuth = (token) ? true : false;
 
 type defaultDataType = {
     token: string,
     isAuth: boolean,
+    name: string,
     loading: boolean
 }
 
 const defaultData: defaultDataType = {
     isAuth,
     token,
-    loading: false
+    loading: false,
+    name
 }
 
 const authReducer = (state = defaultData, action) => {
@@ -18,15 +21,17 @@ const authReducer = (state = defaultData, action) => {
         case 'LOGIN':
             return {
                 ...state,
-                token: action.payload,
+                token: action.payload.token,
                 isAuth: true,
-                loading: false
+                loading: false,
+                name: action.payload.name
             }
         case 'LOGOUT': 
             return {
                 ...state,
                 isAuth: false,
-                token: ''
+                token: '',
+                name: 'User'
             }
         case 'LOADING_ON':
             return {
