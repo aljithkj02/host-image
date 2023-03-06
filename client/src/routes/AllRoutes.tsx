@@ -1,7 +1,7 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { Container } from '@chakra-ui/react'
-import { Home, Login, Signup, Upload } from '../pages'
+import { Home, Login, Signup, Upload, Details } from '../pages'
 import PrivateRoute from './PrivateRoute';
 
 const AllRoutes = () => {
@@ -10,6 +10,7 @@ const AllRoutes = () => {
         <Routes>
               <Route path="/" element={<PrivateRoute> <Home /> </PrivateRoute>} />
               <Route path="/upload" element={<PrivateRoute> <Upload /> </PrivateRoute>} />
+              <Route path="/details/:id" element={<PrivateRoute> <Details /> </PrivateRoute>} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
         </Routes>
