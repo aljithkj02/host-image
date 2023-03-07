@@ -20,7 +20,7 @@ const Home = () => {
       const response = await axios.get(`${config.API_URL}/api/gallery`, {
         headers: {
           'authorization': `Bearer ${token}`,
-        },
+        }, 
       })
       if(response?.data?.status){
         // console.log(response.data)
