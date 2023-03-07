@@ -1,5 +1,4 @@
 const cloudinary = require('cloudinary').v2;
-const fs  = require('fs');
 const Gallery = require('../models/gallery.model');
 
 
