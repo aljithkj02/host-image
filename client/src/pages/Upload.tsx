@@ -15,38 +15,86 @@ const Upload = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    storeImage();
+  }
+
+  const storeImage = async () => {
     try {
       dispatch(loadingOn());
-      const formData = new FormData();
-      formData.append('image', image);
+      // Request for getting signature
       const token = localStorage.getItem('token') || 'token';
-      const res = await axios.post(`${config.API_URL}/api/gallery/upload`, formData, {
+      const signatureResponse = await axios.get(`${config.API_URL}/api/gallery/get-signature`, {
         headers: {
           'authorization': `Bearer ${token}`
         }
       });
-      setImage(null);
+
+      const data = new FormData();
+      data.append("file", image);
+      data.append("api_key", config.CLOUD_API_KEY);
+      data.append("signature", signatureResponse.data.signature);
+      data.append("timestamp", signatureResponse.data.timestamp);
+
+      // Storing image in cloudinary storage
+      const cloudinaryResponse = await axios.post(`https://api.cloudinary.com/v1_1/${config.CLOUD_NAME}/auto/upload`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          console.log(percentCompleted);
+        } 
+      });
+
+       // send the image info back to our server
+      const photoData = {
+          public_id: cloudinaryResponse.data.public_id,
+          version: cloudinaryResponse.data.version,
+          signature: cloudinaryResponse.data.signature,
+          image: cloudinaryResponse.data.secure_url
+      }
+
+      postImage(photoData);
+
+    } catch (err) {
+        dispatch(loadingOff());
+        toast({
+            title: err?.response.data.message,
+            status: 'error',
+            position: 'top',
+            isClosable: true,
+        })
+        console.log(err?.response.data.message);
+    }
+  }
+
+  const postImage = async (photoData) => {
+    try {
+      const token = localStorage.getItem('token') || 'token';
+      const res = await axios.post(`${config.API_URL}/api/gallery/upload`, photoData, {
+        headers: {
+          'authorization': `Bearer ${token}`
+        }
+      });
       if(res?.data?.status){
           toast({
               title: res?.data?.message,
-              status: 'success',
+              status:'success',
               position: 'top',
               isClosable: true,
           })
       }
       dispatch(loadingOff());
-      
     } catch (err) {
-      dispatch(loadingOff());
-      toast({
-          title: err?.response.data.message,
-          status: 'error',
-          position: 'top',
-          isClosable: true,
-      })
-      console.log(err?.response.data.message);
+        dispatch(loadingOff());
+        toast({
+            title: err?.response.data.message,
+            status: 'error',
+            position: 'top',
+            isClosable: true,
+        })
+        console.log(err?.response.data.message);
     }
   }
+
   return (
     <Box display="flex" justifyContent="center" alignItems='center' h="80vh">
       <Box display="flex" flexDir="column" gap={10} borderRadius="lg"
