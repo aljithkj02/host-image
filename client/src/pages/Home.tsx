@@ -23,7 +23,7 @@ const Home = () => {
         },
       })
       if(response?.data?.status){
-        console.log(response.data)
+        // console.log(response.data)
         setData(response.data.data);
       }
       dispatch(loadingOff());
